@@ -1,0 +1,12 @@
+# Model Criticism
+
+
+- General fit
+- Model Comparison
+- Model Selection
+- Model debugging
+
+Misc:
+
+- Model transparency (e.g. model cards)
+- Model fairness: models are ideas, ideas may not be correct, may be ill-posed, or generally off-base, and even wrong by most standards.  The data may be inaccurate, or not representative of the population one wants to generalize to. None of this is the model's fault, and it doesn't make a model biased or unfair.  Like any tool, it is the responsibility of the modeler to understand the problem, its limitations, and its biases.  It's also worth pointing out that those limitations and biases must be proven to be the case, they cannot be assumed to exist any more than one can assume a model to meet its assumptions by merely existing. 
