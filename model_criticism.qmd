@@ -2,11 +2,76 @@
 
 
 - General fit
+- Basics
+    - Metrics
+        Return to MSE, Accuracy/class
+        add - mae, log-likelihood/aic,  confusion matrix metrics, etc.
+    - Residuals
+    - Poster predictive check
+
+
+ML
+    - ML loss curves
 - Model Comparison
 - Model Selection
+    Objective vs. evaluation metrics
+
 - Model debugging
+    - Importance of a baseline model 
+    - Convergence issues
+    - Over/Underfitting assessment
+    - How to improve performance
+    - Model efficiency
+    - Inspection of 
+
+https://developers.google.com/machine-learning/testing-debugging/common/model-errors
 
 Misc:
 
 - Model transparency (e.g. model cards)
 - Model fairness: models are ideas, ideas may not be correct, may be ill-posed, or generally off-base, and even wrong by most standards.  The data may be inaccurate, or not representative of the population one wants to generalize to. None of this is the model's fault, and it doesn't make a model biased or unfair.  Like any tool, it is the responsibility of the modeler to understand the problem, its limitations, and its biases.  It's also worth pointing out that those limitations and biases must be proven to be the case, they cannot be assumed to exist any more than one can assume a model to meet its assumptions by merely existing. 
+
+
+
+
+### Predictive Distribution
+
+As another view, let's plot our predictive *distribution* versus the observed distribution.  
+```{r}
+#| echo: false
+#| label: fig-pp-dists
+#| fig-cap: Predicted vs. Observed Distributions
+
+df_reviews |>
+    select(rating) |>
+    mutate(prediction = predict(model_reviews)) |>
+    pivot_longer(cols = c(rating, prediction), names_to = "type", values_to = "value") |>
+    ggplot(aes(value, fill = type, color = type)) +
+    geom_density(color = NA, alpha = .5) +
+    geom_vline(
+        data = . %>% filter(type == "rating"),
+        aes(xintercept = mean(value)),
+        color = okabe_ito[3],
+        size = 2
+    ) +
+    geom_vline(
+        data = . %>% filter(type == "prediction"),
+        aes(xintercept = mean(value)),
+        color = okabe_ito[3],
+        size = 2
+    ) +
+    scale_color_manual(values = okabe_ito, aesthetics = c("color", "fill")) +
+    labs(
+        x = "Rating",
+        y = "",
+        caption = "Lines are means",
+        subtitle = "Predicted vs. Observed Distributions"
+    ) +
+    theme(
+        axis.ticks.y = element_blank(),
+        axis.text.y = element_blank()
+    )
+
+```
+
+Again, the lumpiness of our feature and it's discrete predictions is borne out visually. We can see more clearly the shortcomings of this model as well. Our feature doesn't capture enough of the variation in our target, as our predicted distribution is more narrow than the observed distribution.  We can also see that our average prediction is the same as the observed mean rating, and this is a consequence of linear regression.
