@@ -1,0 +1,107 @@
+# Basic Modeling Steps
+
+
+Outline
+
+- EDA
+    - Data Processing (cleaning, imputing, transformations)
+    - Vis
+    - Simple corr-plot
+    - Aggregated summaries (possibly creating group level features)
+    - Feature Engineering (embedding, FFT, indexes, aggregates, public information, geography, dates)
+    - Feature Distillation (via domain knowledge, model-based (e.g. PCA, Autoencoder))
+
+BRANCH Statistical vs. ML
+
+- Statistical
+    - Multiple Models (simple, vs. interactions, vs. GAM)
+    - Model Criticism
+    - Simulation
+- ML
+    - Outline the pipeline
+    - Baseline Model
+    - Primary Model(s)
+
+    CV, Hyperparameter Tuning, Model Criticism via Test Set
+
+Model Refinement
+
+- Are there any improvements to be made to the model?
+
+Reporting
+
+- Who is it for?
+- Lots of visualizations
+- Interpretation
+- Comparison
+- Prediction
+
+
+
+```{mermaid}
+%%| echo: false
+%%| eval: false
+%%| fig-cap: Hypothetical modeling process
+
+%% # potential: flowchart, state diagram, mindmap?
+
+stateDiagram-v2
+    classDef somenode fill:#f00,color:white,font-weight:bold,stroke-width:2px,stroke:yellow
+    state fork_state <<fork>>
+    [*] --> EDA
+    state EDA {
+        DataProc 
+        Visualization
+        Imputation
+        FeatEng
+    }
+    EDA --> fork_state
+    fork_state --> Stats
+    fork_state --> ML
+
+    state Stats { 
+        Model1 --> ModelCrit
+        Model1 --> Interpretation
+        Model1 --> Comparison
+        Model2 --> ModelCrit
+        Model2 --> Interpretation
+        Model2 --> Comparison
+        Modeln --> ModelCrit
+        Modeln --> Interpretation
+        Modeln --> Comparison
+    }
+
+
+    state ML { 
+        Baseline --> ModelCrit2
+        Main --> CrossVal
+
+
+    }
+
+    somethign --> [*]
+```
+
+
+```{r}
+#| label: r-setup-Estimation
+#| include: false
+#| echo: false
+#| cache: false
+
+
+library(tidyverse)
+# load("linear_models/data/model_reviews.RData")
+df_reviews <- read_csv("data/movie_reviews.csv") |>
+    drop_na()
+df_reviews_pr <- read_csv("data/movie_reviews_processed.csv") |>
+    drop_na()
+
+model_reviews = lm(rating ~ word_count_sc, data = df_reviews_pr)
+
+source("load_packages.R")
+source("setup.R")
+source("functions/utils.R")
+reticulate::use_condaenv("book-of-models")
+
+```
